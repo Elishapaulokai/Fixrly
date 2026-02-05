@@ -5,7 +5,9 @@
   "type": "module",
   "overrides": {
     "tar": "^7.5.2",
-    "glob": "^10.4.6"
+    "glob": "^13.0.1",
+    "web-animation-club": "npm:@rcaferati/wac@^1.0.0",
+    "rimraf": "^5.0.0"
   },
   "scripts": {
     "dev": "node scripts/setup-sitemap.js && next dev -p 3004",
