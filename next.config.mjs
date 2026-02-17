@@ -3,15 +3,19 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 const domain = apiUrl.replace(/^https?:\/\//, "").split("/api")[0];
 
+// Build remotePatterns array only if domain is not empty
+const remotePatterns = [];
+if (domain && domain.trim() !== "") {
+  remotePatterns.push({
+    protocol: "https",
+    hostname: domain,
+  });
+}
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: domain,
-      },
-    ],
+    ...(remotePatterns.length > 0 && { remotePatterns }),
     unoptimized: false,
   },
   devIndicators: {
