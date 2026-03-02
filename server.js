@@ -140,40 +140,6 @@ app.prepare().then(() => {
     const parsedUrl = parse(req.url, true);
     const { pathname } = parsedUrl;
 
-    // Handle Firebase Messaging Service Worker with correct MIME type
-    if (pathname === "/firebase-messaging-sw.js") {
-      // Apply rate limiting
-      if (!checkRateLimit(clientIp, 'general')) {
-        res.writeHead(429, { 'Retry-After': '60' });
-        res.end("Too Many Requests");
-        return;
-      }
-
-      const swPath = path.join(process.cwd(), "public", "firebase-messaging-sw.js");
-      
-      try {
-        if (fs.existsSync(swPath)) {
-          const fileContent = fs.readFileSync(swPath, "utf-8");
-          res.writeHead(200, { 
-            "Content-Type": "application/javascript; charset=utf-8",
-            "Service-Worker-Allowed": "/",
-            "Cache-Control": "public, max-age=0, must-revalidate"
-          });
-          res.end(fileContent);
-          return;
-        } else {
-          res.writeHead(404);
-          res.end("Service Worker not found");
-          return;
-        }
-      } catch (error) {
-        console.error("Error reading service worker file:", error.code || "Unknown error");
-        res.writeHead(500);
-        res.end("Internal Server Error");
-        return;
-      }
-    }
-
     // Handle .well-known directory requests with path traversal protection
     if (pathname.startsWith("/.well-known")) {
       // Apply rate limiting for .well-known endpoint

@@ -13,5 +13,5 @@ Disallow: /_next/
 # Sitemap location - helps search engines discover all pages
 # This is the main sitemap that contains all language versions
 # Update this URL to match your production domain
-Sitemap: https://e-demand-next-js.vercel.app/sitemap.xml
+Sitemap: https://fixrly.app/sitemap.xml
 
