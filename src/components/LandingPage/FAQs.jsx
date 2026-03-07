@@ -9,7 +9,7 @@ const FAQs = ({ title, desc, data }) => {
   const half = Math.ceil(sortedData?.length / 2);
 
   return (
-    <section className="light_bg_color py-8 md:py-20">
+    <section className="py-10 md:py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
       <div className='container mx-auto'>
         <CommanCenterText
           highlightedText={""}

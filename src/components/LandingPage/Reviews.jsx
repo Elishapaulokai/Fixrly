@@ -38,25 +38,32 @@ const Reviews = ({ title, desc, data }) => {
   };
 
   return (
-    <section id="review" className="relative py-8 md:py-20 primary_bg_color !z-[1]">
-      <div className="container mx-auto flex flex-col md:flex-row items-center gap-8">
+    <section id="review" className="relative py-12 md:py-20 primary_bg_color !z-[1] overflow-hidden">
+      <div className="absolute inset-0 opacity-25">
+        <div className="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-white/20 blur-3xl" />
+      </div>
+
+      <div className="container mx-auto relative flex flex-col md:flex-row items-center gap-10">
         {/* Left section */}
         <div className="text-white md:w-1/3">
-          <h2 className="text-xl md:text-2xl lg:main_headlines  font-bold text-white w-full mx-auto">
+          <h2 className="text-2xl md:text-3xl lg:main_headlines font-extrabold text-white w-full mx-auto">
             {title}
           </h2>
-          <p className="mt-2">{desc}</p>
+          <p className="mt-3 text-white/90">{desc}</p>
           {data?.length > 3 && (
             <div className="flex items-center justify-start gap-4 mt-8">
               <button
                 onClick={() => swiperRef.current?.slidePrev()}
-                className="p-2 bg-transparent text-white border border-white rounded-full"
+                className="h-11 w-11 grid place-items-center bg-white/10 text-white border border-white/30 rounded-full backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/40"
+                aria-label="Previous reviews"
               >
                 <MdOutlineArrowBackIosNew size={20} />
               </button>
               <button
                 onClick={() => swiperRef.current?.slideNext()}
-                className="p-2 bg-transparent text-white border border-white rounded-full"
+                className="h-11 w-11 grid place-items-center bg-white/10 text-white border border-white/30 rounded-full backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/40"
+                aria-label="Next reviews"
               >
                 <MdOutlineArrowForwardIos size={20} />
               </button>

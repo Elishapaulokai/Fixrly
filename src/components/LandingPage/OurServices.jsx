@@ -62,7 +62,11 @@ const OurServices = ({ title, desc, data }) => {
   };
 
   return (
-    <section id="our_service" className="relative py-8 md:py-20">
+    <section
+      id="our_service"
+      className="relative py-10 md:py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900"
+    >
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/10 to-transparent dark:via-white/10" />
       <div className="container mx-auto relative">
         <div className="detail flex flex-col items-center justify-center">
           <CommanCenterText
@@ -104,13 +108,13 @@ const OurServices = ({ title, desc, data }) => {
             </Swiper>
             
             {data && data.length > 1 && (
-              <div className="flex items-center justify-center gap-[32px] w-full mt-[70px] z-10 relative">
+              <div className="flex items-center justify-center gap-6 w-full mt-10 md:mt-14 z-10 relative">
                 <button
                   onClick={handlePrev}
-                  className={`p-2 bg-transparent border-solid border-[1px] border-black dark:border-white rounded-full transition-all duration-300 ${
+                  className={`h-11 w-11 grid place-items-center bg-white/80 dark:bg-white/5 border border-black/10 dark:border-white/15 rounded-full shadow-sm backdrop-blur transition-all duration-300 ${
                     isBeginning
                       ? "opacity-50 cursor-not-allowed" 
-                      : "hover:primary_bg_color hover:text-white hover:border-transparent"
+                      : "hover:primary_bg_color hover:text-white hover:border-transparent hover:shadow-md"
                   }`}
                   disabled={isBeginning}
                   aria-label="Previous slide"
@@ -120,10 +124,10 @@ const OurServices = ({ title, desc, data }) => {
                 </button>
                 <button
                   onClick={handleNext}
-                  className={`p-2 bg-transparent border-solid border-[1px] border-black dark:border-white rounded-full transition-all duration-300 ${
+                  className={`h-11 w-11 grid place-items-center bg-white/80 dark:bg-white/5 border border-black/10 dark:border-white/15 rounded-full shadow-sm backdrop-blur transition-all duration-300 ${
                     isEnd
                       ? "opacity-50 cursor-not-allowed"
-                      : "hover:primary_bg_color hover:text-white hover:border-transparent"
+                      : "hover:primary_bg_color hover:text-white hover:border-transparent hover:shadow-md"
                   }`}
                   disabled={isEnd}
                   aria-label="Next slide"
