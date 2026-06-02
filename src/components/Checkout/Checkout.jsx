@@ -125,7 +125,7 @@ const Checkout = () => {
 
   // Immediate mount check to catch manual back from redirect-based gateways
   useEffect(() => {
-    const PENDING_KEY = "edemand_pending_payment";
+    const PENDING_KEY = "fixrly_pending_payment";
     let pending = null;
     try {
       const raw = localStorage.getItem(PENDING_KEY);
@@ -158,7 +158,7 @@ const Checkout = () => {
   // Handle browser back/forward restoration from BFCache after redirect-based payments (e.g., Xendit)
   useEffect(() => {
     // Local helpers to manage pending redirect-based payments
-    const PENDING_KEY = "edemand_pending_payment";
+    const PENDING_KEY = "fixrly_pending_payment";
     function getPendingPayment() {
       try {
         const raw = localStorage.getItem(PENDING_KEY);
@@ -730,7 +730,7 @@ const Checkout = () => {
           // Mark pending and open PayPal URL in the current window
           try {
             localStorage.setItem(
-              "edemand_pending_payment",
+              "fixrly_pending_payment",
               JSON.stringify({ orderId, method: "paypal", ts: Date.now() })
             );
           } catch (_) {}
@@ -1116,7 +1116,7 @@ const Checkout = () => {
           // Mark pending and open Flutterwave URL in the current window
           try {
             localStorage.setItem(
-              "edemand_pending_payment",
+              "fixrly_pending_payment",
               JSON.stringify({ orderId, method: "flutterwave", ts: Date.now() })
             );
           } catch (_) {}
@@ -1184,7 +1184,7 @@ const Checkout = () => {
           // Mark pending and open Xendit URL in the current window
           try {
             localStorage.setItem(
-              "edemand_pending_payment",
+              "fixrly_pending_payment",
               JSON.stringify({ orderId, method: "xendit", ts: Date.now() })
             );
           } catch (_) {}

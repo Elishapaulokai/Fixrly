@@ -43,7 +43,7 @@ const PaymentStatus = () => {
   // Clear any pending redirect-based payment flag left on Checkout page
   useEffect(() => {
     try {
-      localStorage.removeItem('edemand_pending_payment');
+      localStorage.removeItem('fixrly_pending_payment');
     } catch (_) {}
   }, []);
   

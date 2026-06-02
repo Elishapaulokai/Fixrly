@@ -121,7 +121,7 @@ export default function SitemapPage({
                 title={title || "Sitemap"}
                 description={
                     description ||
-                    "Browse the eDemand site map for quick access to our key pages."
+                    "Browse the Fixrly site map for quick access to our key pages."
                 }
                 keywords={keywords}
                 pageName="/sitemap"

@@ -23,7 +23,6 @@ import Loader from "../ReUseableComponents/Loader";
 import SomethingWentWrong from "../ReUseableComponents/Error/SomethingWentWrong";
 import MaintenanceMode from "../ReUseableComponents/Error/MaintanceMode";
 import BottomNavigation from "./BottomNavigation";
-import { usePathname } from "next/navigation";
 import { useRoutePrefetch } from "@/hooks/useRoutePrefetch";
 import { useInitialLoad } from "@/hooks/useInitialLoad";
 import React from "react";
@@ -38,7 +37,6 @@ const Layout = ({ children }) => {
   const reduxTheme = useSelector(selectTheme);
 
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useDispatch();
   const { theme, setTheme: setNextTheme } = useTheme();
   const [settingsError, setSettingsError] = useState(false);
@@ -48,12 +46,11 @@ const Layout = ({ children }) => {
   const [cookieTitle, setCookieTitle] = useState("");
   const [cookieDescription, setCookieDescription] = useState("");
 
-  const isHomePage = pathname === "/";
-  const isProviderPage = pathname === "/providers";
-  const isServicePage = pathname === "/services";
-  const isProfilePage = pathname === "/profile";
-  const isBecomeProviderPage = pathname === "/become-provider";
-  const isProviderDetailsPage = pathname === "/provider-details";
+  const isHomePage = router.pathname === "/";
+  const isProviderPage = router.pathname === "/providers";
+  const isServicePage = router.pathname === "/services";
+  const isProfilePage = router.pathname === "/profile";
+  const isBecomeProviderPage = router.pathname === "/become-provider";
 
   const [isMobile, setIsMobile] = useState(false);
   const [isTabletOrDesktop, setIsTabletOrDesktop] = useState(true);
@@ -158,36 +155,50 @@ const Layout = ({ children }) => {
   useEffect(() => {
     const currentRoute = router.pathname;
     const isPublicRoute = publicRoutes.includes(currentRoute);
+    const locationRequiredRoutes = ["/", "/providers", "/services"];
+    const isLocationRequiredRoute =
+      locationRequiredRoutes.includes(currentRoute) ||
+      currentRoute === "/provider-details/[...slug]";
 
-    // Only redirect if we are sure there's no location data and no ongoing navigation
+    // Only redirect if we are sure route requires location and no ongoing navigation
     const checkLocationAndRedirect = () => {
-      // Don't redirect during route changes
       if (router.isFallback) return;
 
-      if (
-        !locationData.lat &&
-        !locationData.lng &&
-        !locationData.locationAddress &&
-        !isPublicRoute
-      ) {
-        // Check if we have URL params before redirecting
-        const { lat, lon, lng } = router.query;
-        const hasUrlLocation = lat && (lon || lng);
+      const hasStoredLocation =
+        !!locationData.lat &&
+        !!locationData.lng &&
+        !!locationData.locationAddress;
 
-        // Only redirect if we don't have URL location AND we're not already on /home
-        if (!hasUrlLocation && currentRoute !== "/home") {
-          // Use replace instead of push to avoid adding to history stack
-          router.replace("/home");
-        }
+      // Check if we have location params in URL before redirecting
+      const { lat, lon, lng } = router.query;
+      const hasUrlLocation = !!lat && !!(lon || lng);
+
+      // Redirect only on pages that actually require location context
+      if (
+        isLocationRequiredRoute &&
+        !isPublicRoute &&
+        !hasStoredLocation &&
+        !hasUrlLocation &&
+        currentRoute !== "/home"
+      ) {
+        router.replace("/home");
       }
     };
 
-    // Increase delay to allow route changes to complete
     if (router.isReady) {
       const timeoutId = setTimeout(checkLocationAndRedirect, 300);
       return () => clearTimeout(timeoutId);
     }
-  }, [locationData, router]);
+  }, [
+    locationData.lat,
+    locationData.lng,
+    locationData.locationAddress,
+    router.isReady,
+    router.isFallback,
+    router.pathname,
+    router.query,
+    publicRoutes,
+  ]);
 
   const fetchSettings = useCallback(async () => {
     setIsLoading(true);
@@ -292,7 +303,7 @@ const Layout = ({ children }) => {
     if (isTabletOrDesktop) return true;
 
     // On mobile, only show footer on home page
-    return isMobile && isHomePage && isBecomeProviderPage;
+    return isMobile && isHomePage;
   };
 
   if (settingsError) {

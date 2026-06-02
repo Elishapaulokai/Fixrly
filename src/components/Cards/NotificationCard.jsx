@@ -3,7 +3,7 @@ import React from "react";
 import CustomImageTag from "../ReUseableComponents/CustomImageTag";
 import { IoMdNotifications } from "react-icons/io";
 import { useTranslation } from "../Layout/TranslationContext";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { getNotificationRedirectUrl, isNotificationRedirectable } from "@/utils/notificationRedirect";
 

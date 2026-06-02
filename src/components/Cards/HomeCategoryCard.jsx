@@ -4,11 +4,15 @@ import React from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import CustomImageTag from "../ReUseableComponents/CustomImageTag";
 import { useTranslation } from "../Layout/TranslationContext";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 
 const HomeCategoryCard = ({ data, handleRouteCategory }) => {
 
-  const pathName = usePathname();
+  const router = useRouter();
+  const pathName =
+    router.isReady && router.asPath
+      ? router.asPath.split("?")[0] || "/"
+      : "/";
   const t = useTranslation();
   const isRTL = useRTL();
   const darkMode = useIsDarkMode();

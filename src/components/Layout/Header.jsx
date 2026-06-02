@@ -22,7 +22,6 @@ import EditProfileModal from "../auth/EditProfile";
 import LoginModal from "../auth/LoginModal";
 import TopHeader from "./TopHeader";
 import CartDialog from "../ReUseableComponents/Dialogs/CartDialog";
-import { usePathname } from "next/navigation";
 import AccountDialog from "../ReUseableComponents/Dialogs/AccountDialog";
 import { useRouter } from "next/router";
 import { useTranslation } from "./TranslationContext";
@@ -45,7 +44,10 @@ const Header = () => {
   const t = useTranslation();
   const router = useRouter();
   const isRTL = useRTL();
-  const pathName = usePathname();
+  const pathName =
+    router.isReady && router.asPath
+      ? router.asPath.split("?")[0] || "/"
+      : "/";
   const dispatch = useDispatch();
   const { signOut } = FirebaseData();
   const userData = useSelector(getUserData);

@@ -1,4 +1,4 @@
-# robots.txt for eDemand
+# robots.txt for Fixrly
 # This file tells search engine crawlers which pages they can access
 
 # Allow all crawlers to access all content

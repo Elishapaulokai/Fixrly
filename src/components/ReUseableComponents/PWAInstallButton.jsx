@@ -172,9 +172,9 @@ export default function PWAInstallButton() {
         <button
           onClick={handleInstallClick}
           className="flex items-center space-x-2  primary_bg_color px-4 py-2 text-white shadow-lg rounded-l-md"
-          aria-label={`Install ${process.env.NEXT_PUBLIC_APP_NAME || 'eDemand'}`}
+          aria-label={`Install ${process.env.NEXT_PUBLIC_APP_NAME || 'Fixrly'}`}
         >
-          <span>{isIOS ? 'Add to Home Screen' : `Install ${process.env.NEXT_PUBLIC_APP_NAME || 'eDemand'}`}</span>
+          <span>{isIOS ? 'Add to Home Screen' : `Install ${process.env.NEXT_PUBLIC_APP_NAME || 'Fixrly'}`}</span>
         </button>
         
         <button 

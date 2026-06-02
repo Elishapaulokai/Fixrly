@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-// Default schema markup for eDemand
+// Default schema markup for Fixrly
 export const getDefaultSchemaMarkup = () => {
   return {
     "@context": "https://schema.org",
@@ -131,7 +131,7 @@ export const fetchSeoSettings = async (page, slug, languageCode = null) => {
   } catch (error) {
     console.error("❌ [SEO Helper] SEO API Error:", error);
     // Fallback values - use same values for title/description and OG/Twitter tags
-    const fallbackTitle = process.env.NEXT_PUBLIC_META_TITLE || "eDemand";
+    const fallbackTitle = process.env.NEXT_PUBLIC_META_TITLE || "Fixrly";
     const fallbackDescription = process.env.NEXT_PUBLIC_META_DESCRIPTION || "";
     return {
       props: {

@@ -7,7 +7,6 @@ import { Autoplay, FreeMode, Pagination } from "swiper/modules";
 import BlurredServiceCard from "../Cards/BlurredServiceCard";
 import { addCategory } from "@/redux/reducers/multiCategoriesSlice";
 import { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useRTL } from "@/utils/Helper";
 import { logClarityEvent } from "@/utils/clarityEvents";
@@ -15,7 +14,6 @@ import { HOME_EVENTS } from "@/constants/clarityEventNames";
 
 const HomeCommanSection = ({ data }) => {
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useDispatch();
 
   const isRTL = useRTL();
@@ -39,8 +37,15 @@ const HomeCommanSection = ({ data }) => {
       // Dispatch the category details to Redux
       dispatch(addCategory(category));
 
-      // Navigate to the category details page
-      router.push(`/service/${pathname}/${category.slug}`);
+      const clean = router.asPath?.split("?")[0] || "/";
+      let underService = "";
+      if (clean.startsWith("/service/")) {
+        underService = clean.slice("/service/".length).replace(/\/$/, "");
+      }
+      const suffix = underService
+        ? `${underService}/${category.slug}`
+        : category.slug;
+      router.push(`/service/${suffix}`);
     }
   };
 

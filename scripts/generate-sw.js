@@ -20,19 +20,13 @@ envFiles.forEach(file => {
   }
 });
 
+const outputPath = join(__dirname, '..', 'public', 'firebase-messaging-sw.js');
+
 // Read Firebase config token for API authentication
 // This token is used to secure the /api/sw-init endpoint
-const firebaseConfigToken = process.env.NEXT_PUBLIC_FIREBASE_CONFIG_TOKEN;
-
-if (!firebaseConfigToken) {
-  console.error('❌ Error: FIREBASE_CONFIG_TOKEN environment variable is missing');
-  console.error('   This token is required to secure the Firebase config API endpoint.');
-  console.error('   Generate a random token and add it to your .env file:');
-  console.error('   FIREBASE_CONFIG_TOKEN=your-random-token-here');
-  console.error('\n   You can generate a token using:');
-  console.error('   node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
-  process.exit(1);
-}
+const firebaseConfigToken =
+  process.env.NEXT_PUBLIC_FIREBASE_CONFIG_TOKEN ||
+  process.env.FIREBASE_CONFIG_TOKEN;
 
 // Read required Firebase environment variables (for validation only)
 const firebaseConfig = {
@@ -50,13 +44,29 @@ const missingVars = Object.entries(firebaseConfig)
   .filter(([key, value]) => !value)
   .map(([key]) => key);
 
-if (missingVars.length > 0) {
-  console.error('❌ Error: Missing required environment variables:');
-  missingVars.forEach((key) => {
-    console.error(`   - ${key}`);
-  });
-  console.error('\nPlease ensure all Firebase config variables are set in .env');
-  process.exit(1);
+function writeStubServiceWorker(reason) {
+  const stub = `/* Stub service worker — ${reason}
+   Set NEXT_PUBLIC_FIREBASE_CONFIG_TOKEN (or FIREBASE_CONFIG_TOKEN) and all NEXT_PUBLIC_FIREBASE_* vars, then run: npm run generate-sw */
+self.addEventListener("install", function () {
+  self.skipWaiting();
+});
+self.addEventListener("activate", function (event) {
+  event.waitUntil(self.clients.claim());
+});
+`;
+  writeFileSync(outputPath, stub, 'utf8');
+  console.warn(
+    "Warning: firebase-messaging-sw.js is a minimal stub; push notifications disabled until env is complete."
+  );
+  console.warn("Reason:", reason);
+}
+
+if (!firebaseConfigToken || missingVars.length > 0) {
+  const reason = !firebaseConfigToken
+    ? "NEXT_PUBLIC_FIREBASE_CONFIG_TOKEN (or FIREBASE_CONFIG_TOKEN) is missing"
+    : `Missing Firebase env: ${missingVars.join(", ")}`;
+  writeStubServiceWorker(reason);
+  process.exit(0);
 }
 
 // Generate the service worker file content
@@ -431,8 +441,6 @@ self.addEventListener("notificationclick", function (event) {
 });
 `;
 
-// Write the generated file to public/firebase-messaging-sw.js
-const outputPath = join(__dirname, '..', 'public', 'firebase-messaging-sw.js');
 writeFileSync(outputPath, swContent, 'utf8');
 
 console.log('✅ Successfully generated firebase-messaging-sw.js');

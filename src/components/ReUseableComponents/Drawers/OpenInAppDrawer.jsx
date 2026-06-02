@@ -3,12 +3,16 @@
 import { useTranslation } from "@/components/Layout/TranslationContext";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 
 const OpenInAppDrawer = ({ IsOpenInApp, systemSettingsData }) => {
   const t = useTranslation();
-  const path = usePathname();
+  const router = useRouter();
+  const path =
+    router.isReady && router.asPath
+      ? router.asPath.split("?")[0] || "/"
+      : "/";
   const [showPopup, setShowPopup] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(IsOpenInApp);
 

@@ -7,15 +7,15 @@ const AllProvidersPage = dynamic(
   { ssr: false })
 
 const getDefaultProps = () => ({
-  title: process.env.NEXT_PUBLIC_META_TITLE || "eDemand",
+  title: process.env.NEXT_PUBLIC_META_TITLE || "Fixrly",
   description: process.env.NEXT_PUBLIC_META_DESCRIPTION || "",
   keywords: process.env.NEXT_PUBLIC_META_KEYWORDS || "",
   ogImage: "/favicon.ico",
   schemaMarkup: null,
   favicon: "/favicon.ico",
-  ogTitle: process.env.NEXT_PUBLIC_META_TITLE || "eDemand",
+  ogTitle: process.env.NEXT_PUBLIC_META_TITLE || "Fixrly",
   ogDescription: process.env.NEXT_PUBLIC_META_DESCRIPTION || "",
-  twitterTitle: process.env.NEXT_PUBLIC_META_TITLE || "eDemand",
+  twitterTitle: process.env.NEXT_PUBLIC_META_TITLE || "Fixrly",
   twitterDescription: process.env.NEXT_PUBLIC_META_DESCRIPTION || "",
   twitterImage: "/favicon.ico",
 });
@@ -54,15 +54,15 @@ export const getServerSideProps = serverSidePropsFunction;
 const index = (props = {}) => {
 
   const {
-    title = process.env.NEXT_PUBLIC_META_TITLE || "eDemand",
+    title = process.env.NEXT_PUBLIC_META_TITLE || "Fixrly",
     description = process.env.NEXT_PUBLIC_META_DESCRIPTION || "",
     keywords = process.env.NEXT_PUBLIC_META_KEYWORDS || "",
     ogImage = "/favicon.ico",
     schemaMarkup = null,
     favicon = "/favicon.ico",
-    ogTitle = process.env.NEXT_PUBLIC_META_TITLE || "eDemand",
+    ogTitle = process.env.NEXT_PUBLIC_META_TITLE || "Fixrly",
     ogDescription = process.env.NEXT_PUBLIC_META_DESCRIPTION || "",
-    twitterTitle = process.env.NEXT_PUBLIC_META_TITLE || "eDemand",
+    twitterTitle = process.env.NEXT_PUBLIC_META_TITLE || "Fixrly",
     twitterDescription = process.env.NEXT_PUBLIC_META_DESCRIPTION || "",
     twitterImage = "/favicon.ico",
   } = props;

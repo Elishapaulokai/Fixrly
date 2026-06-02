@@ -1,5 +1,4 @@
 import "@/styles/globals.css";
-import { Lexend } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { useRouter } from "next/router";
 import { Providers } from "@/redux/providers";
@@ -20,8 +19,6 @@ import { APP_LIFECYCLE_EVENTS } from "@/constants/clarityEventNames";
 import "@/utils/notificationRedirect";
 // Global service worker navigation listener for browser notification clicks
 import ServiceWorkerNavigationListener from "@/components/ServiceWorkerNavigationListener";
-
-const font = Lexend({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
@@ -105,7 +102,7 @@ export default function App({ Component, pageProps }) {
       <Providers>
         <QueryProvider>
           <ThemeProvider attribute="class">
-            <main className={font.className}>
+            <main>
               {/* Global service worker navigation listener for browser notification clicks */}
               <ServiceWorkerNavigationListener />
               <RouteProgressBar />

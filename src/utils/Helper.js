@@ -22,7 +22,7 @@ import toast from "react-hot-toast";
 import axios from "axios"; // Added axios import
 import config from "./Langconfig";
 
-// Default schema markup for eDemand
+// Default schema markup for Fixrly
 export const getDefaultSchemaMarkup = () => {
   return {
     "@context": "https://schema.org",

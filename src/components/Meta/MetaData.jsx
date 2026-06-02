@@ -89,10 +89,10 @@ const MetaData = ({
   const webFavicon = favicon || '/favicon.ico';
   
   // Ensure all string values are properly set (no undefined/null)
-  const safeTitle = title || process.env.NEXT_PUBLIC_META_TITLE || 'eDemand';
+  const safeTitle = title || process.env.NEXT_PUBLIC_META_TITLE || 'Fixrly';
   const safeDescription = description || process.env.NEXT_PUBLIC_META_DESCRIPTION || '';
   const safeKeywords = keywords || process.env.NEXT_PUBLIC_META_KEYWORDS || '';
-  const safeAuthor = author || process.env.NEXT_PUBLIC_APP_NAME || 'eDemand';
+  const safeAuthor = author || process.env.NEXT_PUBLIC_APP_NAME || 'Fixrly';
   
   // For Open Graph and Twitter: Use translated title/description if ogTitle/ogDescription not explicitly provided
   // This ensures social media previews show the translated content
@@ -117,7 +117,7 @@ const MetaData = ({
   }
   const safeOgUrl = urlWithLang;
   
-  const safeSiteName = siteName || process.env.NEXT_PUBLIC_META_TITLE || 'eDemand';
+  const safeSiteName = siteName || process.env.NEXT_PUBLIC_META_TITLE || 'Fixrly';
   
   // Twitter tags should match Open Graph tags for consistency
   // Use translated values to ensure social media previews are in the correct language

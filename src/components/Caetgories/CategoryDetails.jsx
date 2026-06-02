@@ -4,7 +4,6 @@ import {
   getSubCategory,
   getParentCategorySlugApi,
 } from "@/api/apiRoutes";
-import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +26,6 @@ import { buildLanguageAwareKey } from "@/lib/react-query-client";
 
 const CategoryDetails = () => {
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useDispatch();
   const t = useTranslation();
   const isRTL = useRTL();
@@ -134,7 +132,11 @@ const CategoryDetails = () => {
     if (!isCategorySelected) {
       // Pass the complete category object to store all data
       dispatch(addCategory(category));
-      router.push(`${pathname}/${category?.slug}`);
+      const base =
+        router.isReady && router.asPath
+          ? router.asPath.split("?")[0] || ""
+          : "";
+      router.push(`${base}/${category?.slug}`);
     }
   };
 

@@ -322,7 +322,7 @@ const SearchLocationBox = ({ open, setIsModalOpen, onCurrentLocationDetected }) 
           return;
         }
       } catch (error) {
-        toast.error(available.message);
+        toast.error(error?.message || t("unknownError"));
         return;
       }
     }

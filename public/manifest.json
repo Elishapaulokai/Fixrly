@@ -1,6 +1,6 @@
 {
-  "name": "eDemand",
-  "short_name": "eDemand",
+  "name": "Fixrly",
+  "short_name": "Fixrly",
   "description": "Your On-Demand Service Booking Platform",
   "start_url": "/",
   "display": "standalone",
@@ -66,7 +66,7 @@
       "sizes": "512x512",
       "type": "image/png",
       "platform": "wide",
-      "label": "eDemand Home Screen"
+      "label": "Fixrly Home Screen"
     }
   ],
   "capture_links": "existing-client-navigate",
@@ -77,7 +77,7 @@
   "edge_side_panel": {
     "preferred_width": 400
   },
-  "id": "edemand-pwa",
+  "id": "fixrly-pwa",
   "file_handlers": [],
   "protocol_handlers": []
 }

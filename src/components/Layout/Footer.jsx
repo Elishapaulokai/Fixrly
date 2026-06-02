@@ -53,13 +53,13 @@ const Footer = () => {
     general_settings && (
       <footer className="secondary_bg_color text-white py-10 pb-0">
         <div className={`container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-[80px]`}>
-          {/* eDemand Info */}
+          {/* Fixrly Info */}
           <div>
             <CustomLink href="/" preserveLanguage={false}>
               <div className="w-16 md:w-[160px] h-auto">
                 <CustomImageTag
                   src={websettings?.footer_logo}
-                  alt="eDemand Logo"
+                  alt="Fixrly Logo"
                   className="w-full aspect-logo object-cover"
                 />
               </div>
