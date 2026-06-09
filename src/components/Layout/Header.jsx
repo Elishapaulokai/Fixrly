@@ -19,7 +19,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import CustomImageTag from "../ReUseableComponents/CustomImageTag";
 import EditProfileModal from "../auth/EditProfile";
-import LoginModal from "../auth/LoginModal";
 import TopHeader from "./TopHeader";
 import CartDialog from "../ReUseableComponents/Dialogs/CartDialog";
 import AccountDialog from "../ReUseableComponents/Dialogs/AccountDialog";
@@ -37,6 +36,7 @@ import RegisterAsProviderModal from "../auth/RegisterAsProviderModal";
 import CustomLink from "../ReUseableComponents/CustomLink";
 import { logClarityEvent } from "@/utils/clarityEvents";
 import { AUTH_EVENTS } from "@/constants/clarityEventNames";
+import { getLoginUrl } from "@/utils/authRoutes";
 // Lazy load sidebar content for better performance
 const SidebarContent = lazy(() => import("./SidebarContent"));
 
@@ -57,7 +57,6 @@ const Header = () => {
   const fcmToken = useSelector((state) => state?.userData?.fcmToken);
   const isLoggedIn = useIsLogin(); // Reactive hook - automatically updates when login state changes
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoginModalOpen, setLoginModalIsOpen] = useState(false);
   const [isRegisterAsProviderModalOpen, setRegisterAsProviderModalIsOpen] = useState(false);
   const [cartVisibleDeskTop, setCartVisibleDeskTop] = useState(false);
   const [cartVisibleMobile, setCartVisibleMobile] = useState(false);
@@ -82,7 +81,11 @@ const Header = () => {
 
   const isCheckoutPage = pathName === "/checkout";
   const isCartPage = pathName === "/cart";
-  const isBecomeProviderPage = pathName === "/become-provider";
+  const normalizedPath =
+    pathName.endsWith("/") && pathName.length > 1
+      ? pathName.slice(0, -1)
+      : pathName;
+  const isBecomeProviderPage = normalizedPath === "/become-provider";
 
   // Access total item count using the selector
   const totalItems = useSelector(selectTotalItems);
@@ -90,8 +93,8 @@ const Header = () => {
   const isReorder = useSelector(selectReorderMode);
 
   const handleOpen = () => {
-    setLoginModalIsOpen(true);
     setIsDrawerOpen(false);
+    router.push(getLoginUrl(router.asPath));
   };
 
   const handleOpenRegisterAsProviderModal = () => {
@@ -407,7 +410,7 @@ const Header = () => {
             {/* Hamburger / Close Icon */}
             <div className="flex items-center gap-4 md:hidden">
               {isLoggedIn && !isCheckoutPage && !isCartPage && (
-                <CustomLink href={'/cart'}>
+                <CustomLink href={'/cart'} requireAuth>
 
                   <div
                     className="relative text-white primary_bg_color h-[36px] w-[36px] rounded-[8px] p-2 flex items-center justify-center cursor-pointer"
@@ -516,13 +519,6 @@ const Header = () => {
 
         </div>
       </div>
-      {isLoginModalOpen && (
-        <LoginModal
-          open={isLoginModalOpen}
-          close={() => setLoginModalIsOpen(false)}
-          setOpenProfileModal={setOpenProfileModal}
-        />
-      )}
       {openProfileModal && (
         <EditProfileModal
           open={openProfileModal}

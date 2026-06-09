@@ -1068,7 +1068,10 @@ export const getBecomeProviderSetttingsApi = async ({
 }) => {
   try {
     const formData = new FormData();
-    formData.append("latitude", longitude);
+    formData.append("latitude", latitude ?? "");
+    if (longitude !== undefined && longitude !== null) {
+      formData.append("longitude", longitude);
+    }
 
     const response = await api.post(
       apiEndPoints.getBecomeProviderSetings,

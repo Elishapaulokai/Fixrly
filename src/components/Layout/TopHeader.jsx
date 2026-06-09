@@ -22,6 +22,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/hooks/useLanguage";
 import { logClarityEvent } from "@/utils/clarityEvents";
 import { AUTH_EVENTS } from "@/constants/clarityEventNames";
+import { isWebSettingEnabled } from "@/utils/Helper";
 
 const TopHeader = () => {
   const dispatch = useDispatch();
@@ -39,7 +40,6 @@ const TopHeader = () => {
   // This prevents the blinking issue when language changes
   const isChangingLanguageRef = useRef(null);
 
-  const isBecomeProviderPage = router.pathname === "/become-provider";
   // Use React Query hook for languages - this will cache the data and only fetch once
   // The hook uses staleTime: Infinity, so it won't refetch unless manually invalidated
   const { languages, isLoading: isLoadingLangs, error: langError } = useLanguage();
@@ -165,12 +165,6 @@ const TopHeader = () => {
   };
 
   useEffect(() => {
-    if (isBecomeProviderPage && webSettings?.show_become_provider_page === false) {
-      router.push("/");
-    }
-  }, [isBecomeProviderPage, webSettings, router]);
-
-  useEffect(() => {
     // Skip if we're in the middle of a programmatic language change
     // This prevents the blinking issue where language would revert
     if (isChangingLanguageRef.current) return;
@@ -223,7 +217,7 @@ const TopHeader = () => {
       <div className="container mx-auto">
         <div className="flex gap-4 md:gap-1 justify-between w-full items-center md:space-y-0">
           <div className="hidden md:flex items-center justify-center gap-2">
-            {webSettings?.show_become_provider_page && (
+            {isWebSettingEnabled(webSettings?.show_become_provider_page) && (
               <>
                 <span>
                   <RiUserSettingsLine size={20} />

@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
+import { useIsLogin } from '@/utils/Helper';
+import { getAuthAwareHref } from '@/utils/authRoutes';
 
 const CustomLink = ({
   href,
@@ -9,9 +11,11 @@ const CustomLink = ({
   className,
   onClick,
   preserveLanguage = true,
+  requireAuth = false,
   ...props
 }) => {
   const [mounted, setMounted] = useState(false);
+  const isLoggedIn = useIsLogin();
 
   // Always call useSelector (never conditionally)
   const reduxLanguage = useSelector((state) => 
@@ -40,8 +44,11 @@ const CustomLink = ({
     }
   };
 
+  const authAwareHref =
+    requireAuth && mounted ? getAuthAwareHref(href, isLoggedIn) : href;
+
   // Prepare the final href
-  const finalHref = preserveLanguage ? getUrlWithLanguage(href) : href;
+  const finalHref = preserveLanguage ? getUrlWithLanguage(authAwareHref) : authAwareHref;
 
   return (
     <Link

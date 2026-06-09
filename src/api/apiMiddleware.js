@@ -1,10 +1,11 @@
 // src/middleware/axiosInterceptor.js
 
 import axios from 'axios';
+import Router from 'next/router';
 import { store } from '../redux/store';
 import { clearUserData } from '@/redux/reducers/userDataSlice';
 import { clearCart } from '@/redux/reducers/cartSlice';
-import { signOut } from 'firebase/auth';
+import { getLoginUrl } from '@/utils/authRoutes';
 
 // Create Axios instance
 const api = axios.create({
@@ -69,12 +70,13 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       console.warn("401 Unauthorized - Logging out user...");
-      // Dispatch logout action to clear user data
       store.dispatch(clearUserData());
       store.dispatch(clearCart());
-      signOut();
-      // Redirect to login page after logout
-      Router.push("/");
+
+      if (typeof window !== "undefined") {
+        const returnPath = `${window.location.pathname}${window.location.search}`;
+        Router.push(getLoginUrl(returnPath));
+      }
     }
     
     return Promise.reject(error);

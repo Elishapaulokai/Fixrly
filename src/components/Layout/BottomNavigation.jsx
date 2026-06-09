@@ -1,26 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
-import { homeIcon, providersIcon, servicesIcon, loginIcon, userIcon } from '../ReUseableComponents/Error/Images'
-import LoginModal from '../auth/LoginModal'
+import { homeIcon, providersIcon, servicesIcon, loginIcon } from '../ReUseableComponents/Error/Images'
 import { useTranslation } from './TranslationContext'
 import { getUserData } from '@/redux/reducers/userDataSlice'
-import EditProfileModal from '../auth/EditProfile'
 import { useIsLogin } from '@/utils/Helper'
+import { AUTH_ACCOUNT_PATH, getLoginUrl } from '@/utils/authRoutes'
 
 const BottomNavigation = () => {
     const t = useTranslation();
     const router = useRouter();
-    const userData = useSelector(getUserData);
-    const isLoggedIn = useIsLogin(); // Reactive hook - automatically updates when login state changes
+    useSelector(getUserData);
+    const isLoggedIn = useIsLogin();
     const currentPath = router.pathname;
-    const [isLoginModalOpen, setLoginModalOpen] = useState(false);
-    const [openProfileModal, setOpenProfileModal] = useState(false);
 
-
-
-    // Base navigation links
     const baseNavLinks = [
         {
             icon: homeIcon(),
@@ -39,75 +33,42 @@ const BottomNavigation = () => {
         }
     ];
 
-    // Add the last nav item based on login status
     const navLinks = [
         ...baseNavLinks,
         isLoggedIn ? {
-            icon: loginIcon(), // Use userIcon for profile
+            icon: loginIcon(),
             text: t('profile'),
-            link: '/profile'
+            link: AUTH_ACCOUNT_PATH
         } : {
-            icon: loginIcon(), // Use loginIcon for login
+            icon: loginIcon(),
             text: t('login'),
-            link: '/login'
+            link: getLoginUrl(AUTH_ACCOUNT_PATH)
         }
     ];
 
-    const handleNavClick = (link) => {
-        if (link === '/login' && !isLoggedIn) {
-            setLoginModalOpen(true);
-            return false; // Prevent default navigation
-        }
-        return true; // Allow navigation
-    };
-
     return (
-        <>
-            <div className='fixed bottom-0 left-0 right-0 grid grid-cols-4 gap-4 w-full card_bg h-[64px] text-[10px] font-normal z-10 md:hidden'>
-                {navLinks.map((nav, index) => {
-                    const isActive =
-                        nav.link === '/'
-                            ? currentPath === '/'
-                            : currentPath.startsWith(nav.link);
+        <div className='fixed bottom-0 left-0 right-0 grid grid-cols-4 gap-4 w-full card_bg h-[64px] text-[10px] font-normal z-10 md:hidden'>
+            {navLinks.map((nav, index) => {
+                const isActive =
+                    nav.link === '/'
+                        ? currentPath === '/'
+                        : currentPath.startsWith(nav.link.split('?')[0]);
 
-                    return (
-                        <Link
-                            href={nav.link}
-                            key={index}
-                            onClick={(e) => {
-                                if (!handleNavClick(nav.link)) {
-                                    e.preventDefault();
-                                }
-                            }}
-                            className={`flex flex-col items-center gap-1 m-auto ${isActive ? 'primary_text_color font-medium' : 'text-gray-500'
-                                }`}
-                        >
-                            <div className={`flex items-center justify-center  ${isActive ? 'bottom_nav_icon' : 'bottom_nav_icon_white'}`}>
-                                {nav?.icon}
-                            </div>
-                            <p>{nav.text}</p>
-                        </Link>
-                    );
-                })}
-            </div>
-
-            {/* Login Modal */}
-            {isLoginModalOpen && (
-                <LoginModal
-                    open={isLoginModalOpen}
-                    close={() => setLoginModalOpen(false)}
-                    setOpenProfileModal={setOpenProfileModal}
-                />
-            )}
-            {openProfileModal && (
-                <EditProfileModal
-                    open={openProfileModal}
-                    close={() => setOpenProfileModal(false)}
-                    isEditProfile={false}
-                    
-                />
-            )}
-        </>
+                return (
+                    <Link
+                        href={nav.link}
+                        key={index}
+                        className={`flex flex-col items-center gap-1 m-auto ${isActive ? 'primary_text_color font-medium' : 'text-gray-500'
+                            }`}
+                    >
+                        <div className={`flex items-center justify-center  ${isActive ? 'bottom_nav_icon' : 'bottom_nav_icon_white'}`}>
+                            {nav?.icon}
+                        </div>
+                        <p>{nav.text}</p>
+                    </Link>
+                );
+            })}
+        </div>
     )
 }
 

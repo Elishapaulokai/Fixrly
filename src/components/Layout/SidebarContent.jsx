@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import CustomImageTag from "../ReUseableComponents/CustomImageTag";
 import CustomLink from "../ReUseableComponents/CustomLink";
-import { placeholderImage } from "@/utils/Helper";
+import { isWebSettingEnabled, placeholderImage } from "@/utils/Helper";
 
 // Memoized Sidebar Content Component
 const SidebarContent = memo(({
@@ -135,7 +135,7 @@ const SidebarContent = memo(({
           </CustomLink>
 
           {/* Become Provider Link - Only show if enabled */}
-          {websettings?.show_become_provider_page && (
+          {isWebSettingEnabled(websettings?.show_become_provider_page) && (
             <CustomLink
               href="/become-provider"
               className={`p-4 border-b description_color dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center justify-between ${pathName === "/become-provider"

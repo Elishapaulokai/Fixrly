@@ -45,9 +45,15 @@ import OTPInput from "react-otp-input";
 import CustomLink from "../ReUseableComponents/CustomLink";
 import { logClarityEvent } from "@/utils/clarityEvents";
 import { AUTH_EVENTS } from "@/constants/clarityEventNames";
+import { useRouter } from "next/router";
+import {
+  AUTH_ACCOUNT_PATH,
+  getSafeRedirectPath,
+} from "@/utils/authRoutes";
 
-const LoginModal = ({ open, close, setOpenProfileModal }) => {
+const LoginModal = ({ open, close, setOpenProfileModal, redirectTo }) => {
   const t = useTranslation();
+  const router = useRouter();
   const isDemo = isDemoMode();
   const isRtl = useRTL();
 
@@ -191,17 +197,35 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
     }
   }, []);
 
-  const handleClose = () => {
+  const resetAuthForm = useCallback(() => {
     clearRecaptcha();
     setPhone("");
     setCountryCode("");
     setShowFullPhoneNumber("");
     setShowOtpScreen(false);
     setOtp("");
-    setMessageCode(null); // Reset messageCode
-    setSmsMethod(""); // Reset smsMethod
+    setMessageCode(null);
+    setSmsMethod("");
+  }, [clearRecaptcha]);
+
+  const handleClose = () => {
+    resetAuthForm();
     close();
   };
+
+  const navigateAfterAuth = useCallback(
+    (fallback = AUTH_ACCOUNT_PATH) => {
+      resetAuthForm();
+      close();
+      const target = getSafeRedirectPath(
+        redirectTo || router.query?.redirect,
+        fallback
+      );
+      router.push(target);
+    },
+    [redirectTo, router, close, resetAuthForm]
+  );
+
   const generateRecaptcha = () => {
     if (!window.recaptchaVerifier) {
       const recaptchaContainer = document.getElementById("recaptcha-container");
@@ -561,7 +585,7 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
           user_id: registerResponse?.data?.id,
           auth_provider: method,
         });
-        handleClose();
+        navigateAfterAuth();
       } else if (messageCode === "102") {
         setOpenProfileModal(true);
         trackLoginSuccess(method, {
@@ -573,6 +597,15 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
       } else if (messageCode === "103") {
         toast.error(t("userDeactivated"));
         handleClose();
+      } else if (user?.token) {
+        dispatch(setUserData(user?.data || user));
+        dispatch(setToken(user.token));
+        toast.success(t("loginSuccessful"));
+        trackLoginSuccess(method, {
+          user_id: user?.data?.id || user?.id,
+          auth_provider: method,
+        });
+        navigateAfterAuth();
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -645,7 +678,7 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
             user_id: registerResponse?.data?.id,
             auth_provider: "google",
           });
-          handleClose();
+          navigateAfterAuth();
         } else if (response.message_code === "102") {
           setOpenProfileModal(true);
           trackLoginSuccess("google", {
@@ -657,6 +690,15 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
         } else if (response.message_code === "103") {
           toast.error(t("userDeactivated"));
           handleClose();
+        } else if (response?.token) {
+          dispatch(setUserData(response.data));
+          dispatch(setToken(response.token));
+          toast.success(t("loginSuccessful"));
+          trackLoginSuccess("google", {
+            user_id: response?.data?.id,
+            auth_provider: "google",
+          });
+          navigateAfterAuth();
         }
       }
     } catch (error) {
@@ -741,7 +783,7 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
                 user_id: registerResponse?.data?.id,
                 auth_provider: "google",
               });
-              handleClose();
+              navigateAfterAuth();
             } else if (response.message_code === "102") {
               setOpenProfileModal(true);
               trackLoginSuccess("google", {
@@ -753,6 +795,15 @@ const LoginModal = ({ open, close, setOpenProfileModal }) => {
             } else if (response.message_code === "103") {
               toast.error(t("userDeactivated"));
               handleClose();
+            } else if (response?.token) {
+              dispatch(setUserData(response.data));
+              dispatch(setToken(response.token));
+              toast.success(t("loginSuccessful"));
+              trackLoginSuccess("google", {
+                user_id: response?.data?.id,
+                auth_provider: "google",
+              });
+              navigateAfterAuth();
             }
           } catch (error) {
             console.error("API error after redirect:", error);

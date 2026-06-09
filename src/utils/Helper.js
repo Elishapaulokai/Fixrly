@@ -228,6 +228,14 @@ export async function getFormattedAddress(lat, lng) {
   }
 }
 
+export const isWebSettingEnabled = (value) => {
+  if (value === undefined || value === null || value === "") return false;
+  if (value === false || value === 0 || value === "0" || value === "false") {
+    return false;
+  }
+  return true;
+};
+
 export const publicRoutes = [
   "/about-us",
   "/contact-us",
@@ -236,6 +244,8 @@ export const publicRoutes = [
   "/faqs",
   "/blogs",
   "/sitemap",
+  "/become-provider",
+  "/login",
   "/blog-details/[slug]",
 ];
 

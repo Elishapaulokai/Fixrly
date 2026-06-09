@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setIsBrowserSupported } from "@/redux/reducers/locationSlice";
 import SearchLocationBox from "../ReUseableComponents/SearchLocationBox/SearchLocationBox";
 import CustomImageTag from "../ReUseableComponents/CustomImageTag";
+import CustomLink from "../ReUseableComponents/CustomLink";
 import { useTranslation } from "../Layout/TranslationContext";
 
 const MainLocation = ({ landingPageBg, landingPageLogo, title }) => {
@@ -74,12 +75,13 @@ const MainLocation = ({ landingPageBg, landingPageLogo, title }) => {
                 />
               </div>
 
-              <a
+              <CustomLink
                 href="/become-provider"
+                preserveLanguage={false}
                 className="hidden sm:inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/40"
               >
                 Become a provider
-              </a>
+              </CustomLink>
             </div>
 
             <div className="flex min-h-[420px] sm:min-h-[520px] lg:min-h-[680px] items-center">
@@ -111,12 +113,13 @@ const MainLocation = ({ landingPageBg, landingPageLogo, title }) => {
                     >
                       Browse services
                     </a>
-                    <a
+                    <CustomLink
                       href="/become-provider"
+                      preserveLanguage={false}
                       className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-transparent px-4 py-3 text-sm font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/40"
                     >
                       Become a provider
-                    </a>
+                    </CustomLink>
                   </div>
                 </div>
               </div>
