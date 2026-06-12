@@ -285,6 +285,7 @@ const SidebarContent = memo(({
                   <div className="bg-gray-50 dark:bg-gray-800">
                     <CustomLink
                       href="/general-bookings"
+                      requireAuth
                       className={`flex items-center gap-4 p-4 pl-8 description_color dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${pathName === "/general-bookings"
                         ? "light_bg_color !primary_text_color"
                         : ""
@@ -327,6 +328,7 @@ const SidebarContent = memo(({
 
                     <CustomLink
                       href="/notifications"
+                      requireAuth
                       className={`flex items-center gap-4 p-4 pl-8 description_color dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${pathName === "/notifications"
                         ? "light_bg_color !primary_text_color"
                         : ""
@@ -348,6 +350,7 @@ const SidebarContent = memo(({
 
                     <CustomLink
                       href="/bookmarks"
+                      requireAuth
                       className={`flex items-center gap-4 p-4 pl-8 description_color dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${pathName === "/bookmarks"
                         ? "light_bg_color !primary_text_color"
                         : ""
@@ -369,6 +372,7 @@ const SidebarContent = memo(({
 
                     <CustomLink
                       href="/addresses"
+                      requireAuth
                       className={`flex items-center gap-4 p-4 pl-8 description_color dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${pathName === "/addresses"
                         ? "light_bg_color !primary_text_color"
                         : ""
@@ -390,6 +394,7 @@ const SidebarContent = memo(({
 
                     <CustomLink
                       href="/payment-history"
+                      requireAuth
                       className={`flex items-center gap-4 p-4 pl-8 description_color dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${pathName === "/payment-history"
                         ? "light_bg_color !primary_text_color"
                         : ""
@@ -433,12 +438,15 @@ const SidebarContent = memo(({
                     {t("registerAsProvider")}
                   </button>
                 ) : (
-                  <button
-                    className="w-full primary_bg_color px-4 py-2 text-white rounded-lg"
-                    onClick={handleOpen}
-                  >
-                    {t("login")}
-                  </button>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      type="button"
+                      className="w-full primary_bg_color px-4 py-2 text-white rounded-lg"
+                      onClick={handleOpen}
+                    >
+                      {t("login")}
+                    </button>
+                  </div>
                 )}
               </div>
             )}

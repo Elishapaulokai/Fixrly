@@ -1,18 +1,18 @@
 /**
- * Central auth routing for Fixrly.
+ * Central auth & navigation rules for Fixrly.
  *
- * Flow:
- * - Public pages: browse without login (home, services, providers, static pages, become-provider).
- * - Private pages: require login; unauthenticated users go to /login?redirect=<intended-path>.
- * - After login/register: return to redirect path, or /profile (account) by default.
- * - Persisted session: Redux + localStorage keeps users signed in until logout or 401.
+ * - Guests without location → /home (landing + location picker)
+ * - Guests with location → / (service home)
+ * - Logged-in users → /profile as "home" (account)
+ * - Protected routes → /login?redirect=… (or /register?redirect=…)
  */
 
-export const AUTH_LOGIN_PATH = "/login";
 export const AUTH_ACCOUNT_PATH = "/profile";
+export const AUTH_LOGIN_PATH = "/login";
+export const AUTH_REGISTER_PATH = "/register";
+export const LANDING_PATH = "/home";
 
-/** Routes that require an authenticated session (Pages Router pathname patterns). */
-export const PRIVATE_ROUTES = [
+export const PRIVATE_ROUTE_PATTERNS = [
   "/cart",
   "/chats",
   "/checkout",
@@ -20,51 +20,131 @@ export const PRIVATE_ROUTES = [
   "/requested-bookings",
   "/bookmarks",
   "/my-services-requests",
-  "/my-service-request-details/[...slug]",
+  "/my-service-request-details",
   "/addresses",
   "/notifications",
   "/payment-status",
   "/payment-history",
-  "/booking/[...slug]",
+  "/booking",
   "/profile",
-  "/search/[slug]",
 ];
 
-export const isPrivateRoute = (pathname = "") =>
-  PRIVATE_ROUTES.includes(pathname);
+const AUTH_ONLY_PATHS = new Set([
+  AUTH_LOGIN_PATH,
+  AUTH_REGISTER_PATH,
+  LANDING_PATH,
+  AUTH_ACCOUNT_PATH,
+]);
 
-/** Prevent open redirects; only allow same-site relative paths. */
-export const getSafeRedirectPath = (path, fallback = AUTH_ACCOUNT_PATH) => {
-  if (!path || typeof path !== "string") return fallback;
+const ALWAYS_PUBLIC_PREFIXES = [
+  "/about-us",
+  "/contact-us",
+  "/terms-and-conditions",
+  "/privacy-policy",
+  "/faqs",
+  "/blogs",
+  "/sitemap",
+  "/become-provider",
+  "/blog-details",
+  "/login",
+  "/register",
+  "/home",
+];
 
-  let decoded = path;
-  try {
-    decoded = decodeURIComponent(path);
-  } catch {
+/**
+ * Routes that need lat/lng before content can load.
+ */
+export const LOCATION_REQUIRED_ROUTE_PATTERNS = [
+  "/",
+  "/providers",
+  "/services",
+  "/provider-details",
+  "/search",
+  "/service",
+];
+
+export function normalizePath(path = "") {
+  if (!path || path === "") return "/";
+  const withoutQuery = String(path).split("?")[0].split("#")[0];
+  if (withoutQuery.length > 1 && withoutQuery.endsWith("/")) {
+    return withoutQuery.slice(0, -1);
+  }
+  return withoutQuery || "/";
+}
+
+export function getSafeRedirectPath(redirect, fallback = AUTH_ACCOUNT_PATH) {
+  const raw =
+    typeof redirect === "string"
+      ? redirect
+      : Array.isArray(redirect)
+        ? redirect[0]
+        : "";
+
+  const path = normalizePath(raw);
+
+  if (!path || path === AUTH_LOGIN_PATH || path === AUTH_REGISTER_PATH) {
     return fallback;
   }
 
-  if (!decoded.startsWith("/") || decoded.startsWith("//")) return fallback;
-  if (decoded.startsWith(AUTH_LOGIN_PATH)) return fallback;
-
-  return decoded;
-};
-
-/** Build login URL with optional return path after auth. */
-export const getLoginUrl = (returnPath = AUTH_ACCOUNT_PATH) => {
-  const safeReturn = getSafeRedirectPath(returnPath, AUTH_ACCOUNT_PATH);
-  if (safeReturn === AUTH_ACCOUNT_PATH && !returnPath) {
-    return AUTH_LOGIN_PATH;
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return fallback;
   }
-  return `${AUTH_LOGIN_PATH}?redirect=${encodeURIComponent(safeReturn)}`;
-};
 
-/** Resolve href for nav links: account when logged in, login with redirect when not. */
-export const getAuthAwareHref = (targetPath, isLoggedIn) => {
-  const safeTarget = getSafeRedirectPath(targetPath, targetPath || AUTH_ACCOUNT_PATH);
-  if (isLoggedIn) return safeTarget;
-  if (isPrivateRoute(safeTarget.split("?")[0])) {
-    return getLoginUrl(safeTarget);
+  return path.startsWith("/") ? path : `/${path}`;
+}
+
+export function getLoginUrl(redirectPath = "") {
+  const safe = getSafeRedirectPath(redirectPath, "");
+  if (!safe) return AUTH_LOGIN_PATH;
+  return `${AUTH_LOGIN_PATH}?redirect=${encodeURIComponent(safe)}`;
+}
+
+export function getRegisterUrl(redirectPath = "") {
+  const loginUrl = getLoginUrl(redirectPath);
+  const separator = loginUrl.includes("?") ? "&" : "?";
+  return `${loginUrl}${separator}mode=register`;
+}
+
+export function isPrivateRoute(pathname) {
+  const path = normalizePath(pathname);
+  return PRIVATE_ROUTE_PATTERNS.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  );
+}
+
+export function isLocationRequiredRoute(pathname) {
+  const path = normalizePath(pathname);
+  if (AUTH_ONLY_PATHS.has(path)) return false;
+  return LOCATION_REQUIRED_ROUTE_PATTERNS.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  );
+}
+
+export function isAlwaysPublicRoute(pathname) {
+  const path = normalizePath(pathname);
+  return ALWAYS_PUBLIC_PREFIXES.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  );
+}
+
+/**
+ * Where the "Home" nav item should go.
+ */
+export function getHomeNavPath(isLoggedIn, hasLocation) {
+  if (isLoggedIn) return AUTH_ACCOUNT_PATH;
+  if (!hasLocation) return LANDING_PATH;
+  return "/";
+}
+
+/**
+ * Rewrite href for guests clicking protected destinations.
+ */
+export function getAuthAwareHref(href, isLoggedIn) {
+  if (isLoggedIn || !href) return href;
+
+  const path = normalizePath(href);
+  if (isPrivateRoute(path)) {
+    return getLoginUrl(href);
   }
-  return getLoginUrl(safeTarget);
-};
+  return href;
+}

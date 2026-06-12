@@ -6,20 +6,23 @@ import { homeIcon, providersIcon, servicesIcon, loginIcon } from '../ReUseableCo
 import { useTranslation } from './TranslationContext'
 import { getUserData } from '@/redux/reducers/userDataSlice'
 import { useIsLogin } from '@/utils/Helper'
-import { AUTH_ACCOUNT_PATH, getLoginUrl } from '@/utils/authRoutes'
+import { AUTH_ACCOUNT_PATH, getHomeNavPath, getLoginUrl } from '@/utils/authRoutes'
 
 const BottomNavigation = () => {
     const t = useTranslation();
     const router = useRouter();
     useSelector(getUserData);
     const isLoggedIn = useIsLogin();
+    const locationData = useSelector((state) => state?.location);
+    const hasLocation = Boolean(locationData?.lat && locationData?.lng);
     const currentPath = router.pathname;
+    const homeLink = getHomeNavPath(isLoggedIn, hasLocation);
 
     const baseNavLinks = [
         {
             icon: homeIcon(),
             text: t('home'),
-            link: '/'
+            link: homeLink
         },
         {
             icon: providersIcon(),
@@ -49,10 +52,11 @@ const BottomNavigation = () => {
     return (
         <div className='fixed bottom-0 left-0 right-0 grid grid-cols-4 gap-4 w-full card_bg h-[64px] text-[10px] font-normal z-10 md:hidden'>
             {navLinks.map((nav, index) => {
+                const navPath = nav.link.split('?')[0];
                 const isActive =
-                    nav.link === '/'
-                        ? currentPath === '/'
-                        : currentPath.startsWith(nav.link.split('?')[0]);
+                    navPath === homeLink
+                        ? currentPath === homeLink || (homeLink === AUTH_ACCOUNT_PATH && currentPath === '/profile')
+                        : currentPath.startsWith(navPath);
 
                 return (
                     <Link

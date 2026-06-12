@@ -10,7 +10,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { get_settings } from "@/api/apiRoutes";
 import { setSettings } from "@/redux/reducers/settingSlice";
-import { publicRoutes, getFormattedAddress } from "@/utils/Helper";
+import { publicRoutes, getFormattedAddress, useIsLogin } from "@/utils/Helper";
+import {
+  isAlwaysPublicRoute,
+  isLocationRequiredRoute,
+  LANDING_PATH,
+} from "@/utils/authRoutes";
 import {
   setIsBrowserSupported,
   setLatitude,
@@ -37,6 +42,7 @@ const Layout = ({ children }) => {
   const reduxTheme = useSelector(selectTheme);
 
   const router = useRouter();
+  const isLoggedIn = useIsLogin();
   const dispatch = useDispatch();
   const { theme, setTheme: setNextTheme } = useTheme();
   const [settingsError, setSettingsError] = useState(false);
@@ -154,41 +160,38 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     const currentRoute = router.pathname;
-    const isPublicRoute = publicRoutes.includes(currentRoute);
-    const locationRequiredRoutes = ["/", "/providers", "/services"];
-    const isLocationRequiredRoute =
-      locationRequiredRoutes.includes(currentRoute) ||
-      currentRoute === "/provider-details/[...slug]";
 
-    // Only redirect if we are sure route requires location and no ongoing navigation
     const checkLocationAndRedirect = () => {
-      if (router.isFallback) return;
+      if (router.isFallback || !router.isReady) return;
+
+      // HomeRouter and landing handle `/` and `/home`; profile never needs location gate
+      if (
+        currentRoute === "/" ||
+        currentRoute === LANDING_PATH ||
+        currentRoute === "/profile" ||
+        isAlwaysPublicRoute(currentRoute) ||
+        publicRoutes.includes(currentRoute)
+      ) {
+        return;
+      }
+
+      if (!isLocationRequiredRoute(currentRoute)) return;
 
       const hasStoredLocation =
         !!locationData.lat &&
         !!locationData.lng &&
         !!locationData.locationAddress;
 
-      // Check if we have location params in URL before redirecting
       const { lat, lon, lng } = router.query;
       const hasUrlLocation = !!lat && !!(lon || lng);
 
-      // Redirect only on pages that actually require location context
-      if (
-        isLocationRequiredRoute &&
-        !isPublicRoute &&
-        !hasStoredLocation &&
-        !hasUrlLocation &&
-        currentRoute !== "/home"
-      ) {
-        router.replace("/home");
+      if (!hasStoredLocation && !hasUrlLocation) {
+        router.replace(LANDING_PATH);
       }
     };
 
-    if (router.isReady) {
-      const timeoutId = setTimeout(checkLocationAndRedirect, 300);
-      return () => clearTimeout(timeoutId);
-    }
+    const timeoutId = setTimeout(checkLocationAndRedirect, 300);
+    return () => clearTimeout(timeoutId);
   }, [
     locationData.lat,
     locationData.lng,
@@ -197,7 +200,7 @@ const Layout = ({ children }) => {
     router.isFallback,
     router.pathname,
     router.query,
-    publicRoutes,
+    isLoggedIn,
   ]);
 
   const fetchSettings = useCallback(async () => {

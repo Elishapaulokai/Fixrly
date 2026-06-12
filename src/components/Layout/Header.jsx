@@ -16,9 +16,16 @@ import { clearUserData, getUserData } from "@/redux/reducers/userDataSlice";
 import {
   useIsLogin, useRTL
 } from "@/utils/Helper";
+import {
+  getHomeNavPath,
+  getLoginUrl,
+  getRegisterUrl,
+  normalizePath,
+} from "@/utils/authRoutes";
 import { useDispatch, useSelector } from "react-redux";
 import CustomImageTag from "../ReUseableComponents/CustomImageTag";
 import EditProfileModal from "../auth/EditProfile";
+import LoginModal from "../auth/LoginModal";
 import TopHeader from "./TopHeader";
 import CartDialog from "../ReUseableComponents/Dialogs/CartDialog";
 import AccountDialog from "../ReUseableComponents/Dialogs/AccountDialog";
@@ -36,7 +43,6 @@ import RegisterAsProviderModal from "../auth/RegisterAsProviderModal";
 import CustomLink from "../ReUseableComponents/CustomLink";
 import { logClarityEvent } from "@/utils/clarityEvents";
 import { AUTH_EVENTS } from "@/constants/clarityEventNames";
-import { getLoginUrl } from "@/utils/authRoutes";
 // Lazy load sidebar content for better performance
 const SidebarContent = lazy(() => import("./SidebarContent"));
 
@@ -55,8 +61,12 @@ const Header = () => {
   const websettings = settingsData?.settings?.web_settings;
   // Get FCM token from userDataSlice (not settingsData)
   const fcmToken = useSelector((state) => state?.userData?.fcmToken);
-  const isLoggedIn = useIsLogin(); // Reactive hook - automatically updates when login state changes
+  const isLoggedIn = useIsLogin();
+  const locationData = useSelector((state) => state?.location);
+  const hasLocation = Boolean(locationData?.lat && locationData?.lng);
+  const homeNavPath = getHomeNavPath(isLoggedIn, hasLocation);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalIsOpen] = useState(false);
   const [isRegisterAsProviderModalOpen, setRegisterAsProviderModalIsOpen] = useState(false);
   const [cartVisibleDeskTop, setCartVisibleDeskTop] = useState(false);
   const [cartVisibleMobile, setCartVisibleMobile] = useState(false);
@@ -95,6 +105,11 @@ const Header = () => {
   const handleOpen = () => {
     setIsDrawerOpen(false);
     router.push(getLoginUrl(router.asPath));
+  };
+
+  const handleRegister = () => {
+    setIsDrawerOpen(false);
+    router.push(getRegisterUrl(router.asPath));
   };
 
   const handleOpenRegisterAsProviderModal = () => {
@@ -273,7 +288,7 @@ const Header = () => {
         {/* Main header */}
         <div className="safari-header w-full card_bg py-4 px-4 flex justify-between items-center flex-wrap md:flex-nowrap h-16 md:h-max">
           <div className="container mx-auto flex justify-between items-center">
-            <CustomLink href="/" title={t("home")} className="relative">
+            <CustomLink href={homeNavPath} title={t("home")} className="relative">
               <CustomImageTag
                 src={websettings?.web_logo}
                 alt={t("logo")}
@@ -284,14 +299,14 @@ const Header = () => {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex gap-6 text_color">
               <CustomLink
-                href="/"
-                className={`relative group text-base font-normal hover:primary_text_color transition-colors ${pathName === "/" ? "primary_text_color" : ""
+                href={homeNavPath}
+                className={`relative group text-base font-normal hover:primary_text_color transition-colors ${normalizePath(pathName) === normalizePath(homeNavPath) ? "primary_text_color" : ""
                   }`}
                 title={t("home")}
               >
                 {t("home")}
                 <span
-                  className={`absolute left-1/2 -bottom-1  h-0.5 primary_bg_color transition-all duration-300 ease-in-out transform -translate-x-1/2 ${pathName === "/" ? "w-3/4" : "w-0 group-hover:w-3/4"
+                  className={`absolute left-1/2 -bottom-1  h-0.5 primary_bg_color transition-all duration-300 ease-in-out transform -translate-x-1/2 ${normalizePath(pathName) === normalizePath(homeNavPath) ? "w-3/4" : "w-0 group-hover:w-3/4"
                     }`}
                 ></span>
               </CustomLink>
@@ -396,12 +411,22 @@ const Header = () => {
                     {t("registerAsProvider")}
                   </button>
                 ) : (
-                  <button
-                    className="primary_bg_color px-4 py-2 text-white rounded-lg"
-                    onClick={handleOpen}
-                  >
-                    {t("login")}
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="px-4 py-2 rounded-lg border border-color description_color"
+                      onClick={handleRegister}
+                    >
+                      {t("register")}
+                    </button>
+                    <button
+                      type="button"
+                      className="primary_bg_color px-4 py-2 text-white rounded-lg"
+                      onClick={handleOpen}
+                    >
+                      {t("login")}
+                    </button>
+                  </>
                 )}
 
               </div>
@@ -519,6 +544,13 @@ const Header = () => {
 
         </div>
       </div>
+      {isLoginModalOpen && (
+        <LoginModal
+          open={isLoginModalOpen}
+          close={() => setLoginModalIsOpen(false)}
+          setOpenProfileModal={setOpenProfileModal}
+        />
+      )}
       {openProfileModal && (
         <EditProfileModal
           open={openProfileModal}

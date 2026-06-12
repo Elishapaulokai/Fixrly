@@ -48,10 +48,18 @@ import { AUTH_EVENTS } from "@/constants/clarityEventNames";
 import { useRouter } from "next/router";
 import {
   AUTH_ACCOUNT_PATH,
+  getLoginUrl,
+  getRegisterUrl,
   getSafeRedirectPath,
 } from "@/utils/authRoutes";
 
-const LoginModal = ({ open, close, setOpenProfileModal, redirectTo }) => {
+const LoginModal = ({
+  open,
+  close,
+  setOpenProfileModal,
+  redirectTo,
+  initialMode = "login",
+}) => {
   const t = useTranslation();
   const router = useRouter();
   const isDemo = isDemoMode();
@@ -904,10 +912,15 @@ const LoginModal = ({ open, close, setOpenProfileModal, redirectTo }) => {
                 // Phone Input Screen
                 <>
                   <div className="flex flex-col gap-1 mb-6">
-                    {/* Welcome Text */}
-                    <div className="text-2xl font-bold">{t("welcome")}</div>
+                    <div className="text-2xl font-bold">
+                      {initialMode === "register"
+                        ? t("register") || "Create account"
+                        : t("welcome")}
+                    </div>
                     <p className="description_color ">
-                      {t("enterYourNumberToGetVerified")}
+                      {initialMode === "register"
+                        ? t("enterYourNumberToGetVerified")
+                        : t("enterYourNumberToGetVerified")}
                     </p>
                   </div>
                   {/* Phone Input Field */}
@@ -1012,6 +1025,30 @@ const LoginModal = ({ open, close, setOpenProfileModal, redirectTo }) => {
                       </p>
                     </div>
                   )}
+
+                  <p className="text-sm text-center description_color mt-4">
+                    {initialMode === "register" ? (
+                      <>
+                        {t("alreadyHaveAccount") || "Already have an account?"}{" "}
+                        <CustomLink
+                          href={getLoginUrl(redirectTo || router.query?.redirect)}
+                          className="primary_text_color underline font-medium"
+                        >
+                          {t("login")}
+                        </CustomLink>
+                      </>
+                    ) : (
+                      <>
+                        {t("dontHaveAccount") || "Don't have an account?"}{" "}
+                        <CustomLink
+                          href={getRegisterUrl(redirectTo || router.query?.redirect)}
+                          className="primary_text_color underline font-medium"
+                        >
+                          {t("register")}
+                        </CustomLink>
+                      </>
+                    )}
+                  </p>
 
                   {/* Footer */}
                   <p className="text-xs text-center description_color mt-6">

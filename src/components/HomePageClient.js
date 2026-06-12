@@ -1,4 +1,4 @@
 "use client";
 
-export { default } from "./HomePage/HomePage";
+export { default } from "./HomePage/HomeRouter";
 

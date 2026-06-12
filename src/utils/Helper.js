@@ -245,7 +245,9 @@ export const publicRoutes = [
   "/blogs",
   "/sitemap",
   "/become-provider",
+  "/home",
   "/login",
+  "/register",
   "/blog-details/[slug]",
 ];
 

@@ -6,16 +6,16 @@ const AuthPage = dynamic(
   { ssr: false }
 );
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <>
       <MetaData
-        title={`Login - ${process.env.NEXT_PUBLIC_APP_NAME || "Fixrly"}`}
+        title={`Register - ${process.env.NEXT_PUBLIC_APP_NAME || "Fixrly"}`}
         description={process.env.NEXT_PUBLIC_META_DESCRIPTION}
-        pageName="/login"
+        pageName="/register"
         robots="noindex, nofollow"
       />
-      <AuthPage initialMode="login" />
+      <AuthPage initialMode="register" />
     </>
   );
 }

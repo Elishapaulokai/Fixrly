@@ -4,7 +4,11 @@ import { useRouter } from "next/router"
 import { useSelector } from "react-redux";
 import Loader from "../ReUseableComponents/Loader";
 import { useIsLogin } from "@/utils/Helper";
-import { getLoginUrl, isPrivateRoute } from "@/utils/authRoutes";
+import {
+  AUTH_ACCOUNT_PATH,
+  getLoginUrl,
+  isPrivateRoute,
+} from "@/utils/authRoutes";
 
 const withAuth = (WrappedComponent) => {
 
@@ -33,7 +37,7 @@ const withAuth = (WrappedComponent) => {
             setAuthChecked(true);
 
             if (isLandingPage && locationData?.lat && locationData?.lng) {
-                router.push("/");
+                router.replace(isLoggedIn ? AUTH_ACCOUNT_PATH : "/");
             }
         }, [userData, router, isLoggedIn, locationData?.lat, locationData?.lng, isLandingPage])
 
