@@ -75,18 +75,6 @@ const SidebarContent = memo(({
       <div className="flex-1 overflow-y-auto">
         <div className="flex flex-col">
           <CustomLink
-            href="/"
-            className={`p-4 border-b description_color dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center justify-between ${pathName === "/"
-              ? "light_bg_color !primary_text_color"
-              : ""
-              }`}
-            title={t("home")}
-          >
-            <span>{t("home")}</span>
-            <span className="text-gray-400">›</span>
-          </CustomLink>
-
-          <CustomLink
             href="/services"
             className={`p-4 border-b description_color dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center justify-between ${pathName === "/services"
               ? "light_bg_color !primary_text_color"

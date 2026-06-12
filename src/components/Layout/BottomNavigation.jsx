@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
-import { homeIcon, providersIcon, servicesIcon, loginIcon } from '../ReUseableComponents/Error/Images'
+import { providersIcon, servicesIcon, loginIcon } from '../ReUseableComponents/Error/Images'
 import { useTranslation } from './TranslationContext'
 import { getUserData } from '@/redux/reducers/userDataSlice'
 import { useIsLogin } from '@/utils/Helper'
@@ -13,15 +13,13 @@ const BottomNavigation = () => {
     const router = useRouter();
     useSelector(getUserData);
     const isLoggedIn = useIsLogin();
-    const locationData = useSelector((state) => state?.location);
-    const hasLocation = Boolean(locationData?.lat && locationData?.lng);
     const currentPath = router.pathname;
-    const homeLink = getHomeNavPath(isLoggedIn, hasLocation);
+    const homeLink = getHomeNavPath();
 
     const baseNavLinks = [
         {
-            icon: homeIcon(),
-            text: t('home'),
+            icon: servicesIcon(),
+            text: t('services'),
             link: homeLink
         },
         {
@@ -29,11 +27,6 @@ const BottomNavigation = () => {
             text: t('providers'),
             link: '/providers'
         },
-        {
-            icon: servicesIcon(),
-            text: t('services'),
-            link: '/services'
-        }
     ];
 
     const navLinks = [
@@ -50,12 +43,12 @@ const BottomNavigation = () => {
     ];
 
     return (
-        <div className='fixed bottom-0 left-0 right-0 grid grid-cols-4 gap-4 w-full card_bg h-[64px] text-[10px] font-normal z-10 md:hidden'>
+        <div className='fixed bottom-0 left-0 right-0 grid grid-cols-3 gap-4 w-full card_bg h-[64px] text-[10px] font-normal z-10 md:hidden'>
             {navLinks.map((nav, index) => {
                 const navPath = nav.link.split('?')[0];
                 const isActive =
                     navPath === homeLink
-                        ? currentPath === homeLink || (homeLink === AUTH_ACCOUNT_PATH && currentPath === '/profile')
+                        ? currentPath === homeLink || currentPath === '/'
                         : currentPath.startsWith(navPath);
 
                 return (

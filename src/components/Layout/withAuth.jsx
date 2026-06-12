@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import Loader from "../ReUseableComponents/Loader";
 import { useIsLogin } from "@/utils/Helper";
 import {
-  AUTH_ACCOUNT_PATH,
+  DEFAULT_APP_PATH,
   getLoginUrl,
   isPrivateRoute,
 } from "@/utils/authRoutes";
@@ -37,7 +37,7 @@ const withAuth = (WrappedComponent) => {
             setAuthChecked(true);
 
             if (isLandingPage && locationData?.lat && locationData?.lng) {
-                router.replace(isLoggedIn ? AUTH_ACCOUNT_PATH : "/");
+                router.replace(DEFAULT_APP_PATH);
             }
         }, [userData, router, isLoggedIn, locationData?.lat, locationData?.lng, isLandingPage])
 

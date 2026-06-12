@@ -15,6 +15,7 @@ import { getPlacesDetailsForWebApi, getPlacesForWebApi, providerAvailableApi } f
 import { Skeleton } from "@/components/ui/skeleton";
 import toast from "react-hot-toast";
 import LocationModal from "../LocationModal";
+import { DEFAULT_APP_PATH } from "@/utils/authRoutes";
 
 const SearchLocationBox = ({ open, setIsModalOpen, onCurrentLocationDetected }) => {
   const dispatch = useDispatch();
@@ -191,13 +192,13 @@ const SearchLocationBox = ({ open, setIsModalOpen, onCurrentLocationDetected }) 
         dispatch(setLatitude(fullAddress.lat));
         dispatch(setLongitude(fullAddress.lng));
         dispatch(locationAddressData(fullAddress.address));
-        router.push("/");
+        router.push(DEFAULT_APP_PATH);
       } catch (error) {
         toast.error(error.message);
       }
     } else if (fullAddress.address) {
       dispatch(locationAddressData(fullAddress.address));
-      router.push("/");
+      router.push(DEFAULT_APP_PATH);
     } else {
       toast.error(t("pleaseSelectValidLocation"));
     }

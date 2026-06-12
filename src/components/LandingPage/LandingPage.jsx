@@ -20,6 +20,7 @@ import MaintenanceMode from "../ReUseableComponents/Error/MaintanceMode";
 import { useRouter } from "next/router";
 import CookieConsent from "../ReUseableComponents/CookieConsent";
 import withAuth from "../Layout/withAuth";
+import { DEFAULT_APP_PATH } from "@/utils/authRoutes";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -134,7 +135,7 @@ const LandingPage = () => {
 
       // Redirect to home with language parameter
       router.push({
-        pathname: "/",
+        pathname: DEFAULT_APP_PATH,
         query: { lang: currentLangCode }
       });
     } catch (error) {
@@ -144,7 +145,7 @@ const LandingPage = () => {
       // Still redirect even if address fails
       const currentLangCode = currentLanguage?.langCode || 'en';
       router.push({
-        pathname: "/",
+        pathname: DEFAULT_APP_PATH,
         query: { lang: currentLangCode }
       });
     }
@@ -174,7 +175,7 @@ const LandingPage = () => {
 
         // Redirect to home with language parameter
         router.push({
-          pathname: "/",
+          pathname: DEFAULT_APP_PATH,
           query: { lang: currentLangCode }
         });
       } catch (error) {
@@ -184,7 +185,7 @@ const LandingPage = () => {
         // Still redirect even if address fails
         const currentLangCode = currentLanguage?.langCode || 'en';
         router.push({
-          pathname: "/",
+          pathname: DEFAULT_APP_PATH,
           query: { lang: currentLangCode }
         });
       }

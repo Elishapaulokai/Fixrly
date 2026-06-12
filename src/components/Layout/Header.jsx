@@ -62,9 +62,7 @@ const Header = () => {
   // Get FCM token from userDataSlice (not settingsData)
   const fcmToken = useSelector((state) => state?.userData?.fcmToken);
   const isLoggedIn = useIsLogin();
-  const locationData = useSelector((state) => state?.location);
-  const hasLocation = Boolean(locationData?.lat && locationData?.lng);
-  const homeNavPath = getHomeNavPath(isLoggedIn, hasLocation);
+  const homeNavPath = getHomeNavPath();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalIsOpen] = useState(false);
   const [isRegisterAsProviderModalOpen, setRegisterAsProviderModalIsOpen] = useState(false);
@@ -131,7 +129,7 @@ const Header = () => {
       dispatch(clearUserData());
       dispatch(clearCart());
       signOut();
-      router.push("/");
+      router.push(getHomeNavPath());
       toast.success(response?.message);
       // Log logout only after the server confirms the session is closed.
       logClarityEvent(AUTH_EVENTS.LOGOUT, {

@@ -9,7 +9,7 @@ import {
   AUTH_ACCOUNT_PATH,
   AUTH_LOGIN_PATH,
   getSafeRedirectPath,
-  LANDING_PATH,
+  DEFAULT_APP_PATH,
 } from "@/utils/authRoutes";
 
 const AuthPage = ({ initialMode = "login" }) => {
@@ -35,7 +35,7 @@ const AuthPage = ({ initialMode = "login" }) => {
       router.back();
       return;
     }
-    router.push(LANDING_PATH);
+    router.push(DEFAULT_APP_PATH);
   };
 
   if (!ready || isLoggedIn) {

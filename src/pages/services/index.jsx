@@ -46,7 +46,7 @@ const index = ({
         title={title}
         description={description}
         keywords={keywords}
-        pageName="/"
+        pageName="/services"
         // Open Graph
         ogTitle={ogTitle}
         ogDescription={ogDescription}

@@ -4,9 +4,9 @@ import { useEffect } from 'react';
 
 // Common routes that should be prefetched
 const commonRoutes = [
-  '/home',
-  '/providers',
   '/services',
+  '/providers',
+  '/home',
   '/profile',
   '/cart',
   '/notifications',

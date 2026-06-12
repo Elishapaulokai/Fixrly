@@ -14,6 +14,7 @@ import { publicRoutes, getFormattedAddress, useIsLogin } from "@/utils/Helper";
 import {
   isAlwaysPublicRoute,
   isLocationRequiredRoute,
+  DEFAULT_APP_PATH,
   LANDING_PATH,
 } from "@/utils/authRoutes";
 import {
@@ -167,6 +168,7 @@ const Layout = ({ children }) => {
       // HomeRouter and landing handle `/` and `/home`; profile never needs location gate
       if (
         currentRoute === "/" ||
+        currentRoute === DEFAULT_APP_PATH ||
         currentRoute === LANDING_PATH ||
         currentRoute === "/profile" ||
         isAlwaysPublicRoute(currentRoute) ||
@@ -186,7 +188,7 @@ const Layout = ({ children }) => {
       const hasUrlLocation = !!lat && !!(lon || lng);
 
       if (!hasStoredLocation && !hasUrlLocation) {
-        router.replace(LANDING_PATH);
+        router.replace(DEFAULT_APP_PATH);
       }
     };
 

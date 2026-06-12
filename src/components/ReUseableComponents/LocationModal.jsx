@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/router";
+import { DEFAULT_APP_PATH } from "@/utils/authRoutes";
 
 const LocationModal = ({ 
   open, 
@@ -139,7 +140,7 @@ const LocationModal = ({
 
           // ✅ Handle redirect based on props (only if location changed)
           if (redirectToHome && hasLocationChanged) {
-            router.push("/");
+            router.push(DEFAULT_APP_PATH);
           }
 
         } else {
